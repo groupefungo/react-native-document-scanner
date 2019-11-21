@@ -29,12 +29,12 @@ android {
 }
 
 dependencies {
-    implementation project(':openCVLibrary310')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.facebook.react:react-native:0.19.+'
-    implementation 'com.google.zxing:core:3.0.1'
+    compile project(':openCVLibrary310')
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.facebook.react:react-native:0.19.+'
+    compile 'com.google.zxing:core:3.0.1'
 //    implementation 'com.android.support:design:26.1.0'
-    implementation 'org.piwik.sdk:piwik-sdk:0.0.4'
-    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    implementation 'us.feras.mdv:markdownview:1.1.0'
+    compile 'org.piwik.sdk:piwik-sdk:0.0.4'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    compile 'us.feras.mdv:markdownview:1.1.0'
 }

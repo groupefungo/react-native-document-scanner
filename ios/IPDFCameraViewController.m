@@ -130,19 +130,19 @@
     AVCaptureConnection *connection = [dataOutput.connections firstObject];
     [connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
 
-    if (device.isFlashAvailable)
-    {
-        [device lockForConfiguration:nil];
-        [device setFlashMode:AVCaptureFlashModeOff];
-        [device unlockForConfiguration];
-
-        if ([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus])
-        {
-            [device lockForConfiguration:nil];
-            [device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
-            [device unlockForConfiguration];
-        }
-    }
+//    if (device.isFlashAvailable)
+//    {
+//        [device lockForConfiguration:nil];
+//        [device setFlashMode:AVCaptureFlashModeOff];
+//        [device unlockForConfiguration];
+//
+//        if ([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus])
+//        {
+//            [device lockForConfiguration:nil];
+//            [device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
+//            [device unlockForConfiguration];
+//        }
+//    }
 
     [session commitConfiguration];
 }

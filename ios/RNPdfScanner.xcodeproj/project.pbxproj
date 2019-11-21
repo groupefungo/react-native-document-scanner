@@ -10,6 +10,7 @@
 		D2EF80001EFD1111008AB871 /* DocumentScannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = D2EF7FFD1EFD1111008AB871 /* DocumentScannerView.m */; };
 		D2EF80011EFD1111008AB871 /* IPDFCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2EF7FFF1EFD1111008AB871 /* IPDFCameraViewController.m */; };
 		D2EF803F1EFD1803008AB871 /* RNPdfScannerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D2EF803E1EFD1803008AB871 /* RNPdfScannerManager.m */; };
+		F0C39291BBE500E0B64E9BC1 /* Pods_RNPdfScanner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC28D7605051F49F306C5A86 /* Pods_RNPdfScanner.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +27,9 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNPdfScanner.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNPdfScanner.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E51CD7345C2147EE1615545 /* Pods-RNPdfScanner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNPdfScanner.debug.xcconfig"; path = "Target Support Files/Pods-RNPdfScanner/Pods-RNPdfScanner.debug.xcconfig"; sourceTree = "<group>"; };
+		20EE4A3A288E931BA5FAF571 /* Pods-RNPdfScanner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNPdfScanner.release.xcconfig"; path = "Target Support Files/Pods-RNPdfScanner/Pods-RNPdfScanner.release.xcconfig"; sourceTree = "<group>"; };
+		AC28D7605051F49F306C5A86 /* Pods_RNPdfScanner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNPdfScanner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2EF7FFC1EFD1111008AB871 /* DocumentScannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocumentScannerView.h; sourceTree = "<group>"; };
 		D2EF7FFD1EFD1111008AB871 /* DocumentScannerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentScannerView.m; sourceTree = "<group>"; };
 		D2EF7FFE1EFD1111008AB871 /* IPDFCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPDFCameraViewController.h; sourceTree = "<group>"; };
@@ -39,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0C39291BBE500E0B64E9BC1 /* Pods_RNPdfScanner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,7 +68,26 @@
 				D2EF7FFE1EFD1111008AB871 /* IPDFCameraViewController.h */,
 				D2EF7FFF1EFD1111008AB871 /* IPDFCameraViewController.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				FEE00276D143EBB710583F41 /* Pods */,
+				708BACC260ECB525A0BA9507 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		708BACC260ECB525A0BA9507 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AC28D7605051F49F306C5A86 /* Pods_RNPdfScanner.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FEE00276D143EBB710583F41 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1E51CD7345C2147EE1615545 /* Pods-RNPdfScanner.debug.xcconfig */,
+				20EE4A3A288E931BA5FAF571 /* Pods-RNPdfScanner.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -73,6 +97,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RNPdfScanner" */;
 			buildPhases = (
+				6497AE91A34FDC938D68BAED /* [CP] Check Pods Manifest.lock */,
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
 				58B511D91A9E6C8500147676 /* CopyFiles */,
@@ -105,6 +130,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -116,6 +142,31 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6497AE91A34FDC938D68BAED /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RNPdfScanner-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		58B511D71A9E6C8500147676 /* Sources */ = {
@@ -207,6 +258,7 @@
 		};
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1E51CD7345C2147EE1615545 /* Pods-RNPdfScanner.debug.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -223,6 +275,7 @@
 		};
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 20EE4A3A288E931BA5FAF571 /* Pods-RNPdfScanner.release.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
