@@ -341,7 +341,7 @@
     }
 }
 
-- (void)captureImageWithCompletionHander:(void(^)(id data, id initialData, CIRectangleFeature *rectangleFeature))completionHandler
+- (void)captureImageWithCompletionHander:(void(^)(id data/*, id initialData, CIRectangleFeature *rectangleFeature*/))completionHandler
 {
     if (_isCapturing) return;
 
@@ -399,24 +399,24 @@
                      UIGraphicsBeginImageContext(CGSizeMake(enhancedImage.extent.size.height, enhancedImage.extent.size.width));
                      [[UIImage imageWithCIImage:enhancedImage scale:1.0 orientation:UIImageOrientationRight] drawInRect:CGRectMake(0,0, enhancedImage.extent.size.height, enhancedImage.extent.size.width)];
                      UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-                     UIImage *initialImage = [UIImage imageWithData:imageData];
+                     //UIImage *initialImage = [UIImage imageWithData:imageData];
                      UIGraphicsEndImageContext();
 
                      [weakSelf hideGLKView:NO completion:nil];
-                     completionHandler(image, initialImage, rectangleFeature);
+                     completionHandler(image/*, initialImage, rectangleFeature*/);
                  }
              } else {
                  [weakSelf hideGLKView:NO completion:nil];
-                 UIImage *initialImage = [UIImage imageWithData:imageData];
-                 completionHandler(initialImage, initialImage, nil);
+                 //UIImage *initialImage = [UIImage imageWithData:imageData];
+                 //completionHandler(initialImage/*, initialImage, nil*/);
              }
 
          }
          else
          {
              [weakSelf hideGLKView:NO completion:nil];
-             UIImage *initialImage = [UIImage imageWithData:imageData];
-             completionHandler(initialImage, initialImage, nil);
+             //UIImage *initialImage = [UIImage imageWithData:imageData];
+             //completionHandler(initialImage/*, initialImage, nil*/);
          }
 
          _isCapturing = NO;
