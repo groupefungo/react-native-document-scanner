@@ -35,7 +35,7 @@
 - (void) capture {
     [self captureImageWithCompletionHander:^(UIImage *croppedImage/*, UIImage *initialImage, CIRectangleFeature *rectangleFeature*/) {
       if (self.onPictureTaken) {
-            NSData *croppedImageData = UIImageJPEGRepresentation(croppedImage, self.quality);
+            NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);
 
             /*if (initialImage.imageOrientation != UIImageOrientationUp) {
                 UIGraphicsBeginImageContextWithOptions(initialImage.size, false, initialImage.scale);
@@ -68,14 +68,14 @@
                 /*if (self.saveInAppDocument) {
                     dir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
                 }*/
-               NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
+               NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.png",(int)[NSDate date].timeIntervalSince1970]];
                //NSString *initialFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"initial_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
 
               [croppedImageData writeToFile:croppedFilePath atomically:YES];
               //[initialImageData writeToFile:initialFilePath atomically:YES];
 
                self.onPictureTaken(@{
-                                     @"croppedImage": croppedFilePath/*,
+                                     @"croppedImage": croppedFilePath /*,
                                      @"initialImage": initialFilePath,
                                      @"rectangleCoordinates": rectangleCoordinates*/ });
             }

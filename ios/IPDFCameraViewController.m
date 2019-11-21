@@ -256,7 +256,7 @@
     [self hideGLKView:YES completion:nil];
 }
 
-- (void)setEnableTorch:(BOOL)enableTorch
+/*- (void)setEnableTorch:(BOOL)enableTorch
 {
     _enableTorch = enableTorch;
 
@@ -274,15 +274,15 @@
         }
         [device unlockForConfiguration];
     }
-}
+}*/
 
-- (void)setUseFrontCam:(BOOL)useFrontCam
+/*- (void)setUseFrontCam:(BOOL)useFrontCam
 {
     _useFrontCam = useFrontCam;
     [self stop];
     [self setupCameraView];
     [self start];
-}
+}*/
 
 
 - (void)setContrast:(float)contrast
@@ -341,21 +341,21 @@
     }
 }
 
-- (void)captureImageWithCompletionHander:(void(^)(id data/*, id initialData, CIRectangleFeature *rectangleFeature*/))completionHandler
+- (void)captureImageWithCompletionHander:(void(^)(UIImage *data/*, id initialData, CIRectangleFeature *rectangleFeature*/))completionHandler
 {
     if (_isCapturing) return;
-
+    
+    _isCapturing = YES;
+    
     __weak typeof(self) weakSelf = self;
 
-    [weakSelf hideGLKView:YES completion:^
-    {
-        [weakSelf hideGLKView:NO completion:^
-        {
-            [weakSelf hideGLKView:YES completion:nil];
-        }];
-    }];
-
-    _isCapturing = YES;
+//    [weakSelf hideGLKView:YES completion:^
+//    {
+//        [weakSelf hideGLKView:NO completion:^
+//        {
+//            [weakSelf hideGLKView:YES completion:nil];
+//        }];
+//    }];
 
     AVCaptureConnection *videoConnection = nil;
     for (AVCaptureConnection *connection in self.stillImageOutput.connections)
@@ -489,27 +489,28 @@
 {
     if (![rectangles count]) return nil;
 
-    float halfPerimiterValue = 0;
+//    float halfPerimiterValue = 0;
 
     CIRectangleFeature *biggestRectangle = [rectangles firstObject];
 
     for (CIRectangleFeature *rect in rectangles)
     {
-        CGPoint p1 = rect.topLeft;
-        CGPoint p2 = rect.topRight;
-        CGFloat width = hypotf(p1.x - p2.x, p1.y - p2.y);
+//        CGPoint p1 = rect.topLeft;
+//        CGPoint p2 = rect.topRight;
+//        CGFloat width = hypotf(p1.x - p2.x, p1.y - p2.y);
 
-        CGPoint p3 = rect.topLeft;
-        CGPoint p4 = rect.bottomLeft;
-        CGFloat height = hypotf(p3.x - p4.x, p3.y - p4.y);
+//        CGPoint p3 = rect.topLeft;
+//        CGPoint p4 = rect.bottomLeft;
+//        CGFloat height = hypotf(p3.x - p4.x, p3.y - p4.y);
 
-        CGFloat currentHalfPerimiterValue = height + width;
+//        CGFloat currentHalfPerimiterValue = height + width;
 
-        if (halfPerimiterValue < currentHalfPerimiterValue)
-        {
-            halfPerimiterValue = currentHalfPerimiterValue;
-            biggestRectangle = rect;
-        }
+//        if (halfPerimiterValue < currentHalfPerimiterValue)
+//        {
+//            halfPerimiterValue = currentHalfPerimiterValue;
+        biggestRectangle = rect;
+        break;
+//        }
     }
 
     if (self.delegate) {
