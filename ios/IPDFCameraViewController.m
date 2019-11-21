@@ -407,16 +407,16 @@
                  }
              } else {
                  [weakSelf hideGLKView:NO completion:nil];
-                 //UIImage *initialImage = [UIImage imageWithData:imageData];
-                 //completionHandler(initialImage/*, initialImage, nil*/);
+                 UIImage *initialImage = [UIImage imageWithData:imageData];
+                 completionHandler(initialImage/*, initialImage, nil*/);
              }
 
          }
          else
          {
              [weakSelf hideGLKView:NO completion:nil];
-             //UIImage *initialImage = [UIImage imageWithData:imageData];
-             //completionHandler(initialImage/*, initialImage, nil*/);
+             UIImage *initialImage = [UIImage imageWithData:imageData];
+             completionHandler(initialImage/*, initialImage, nil*/);
          }
 
          _isCapturing = NO;
