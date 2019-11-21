@@ -15,6 +15,7 @@
 
 
 - (void) didDetectRectangle:(CIRectangleFeature *)rectangle withType:(IPDFRectangeType)type {
+    NSLog(@"didDetectRectangle");
     switch (type) {
         case IPDFRectangeTypeGood:
             self.stableCounter ++;
@@ -33,6 +34,7 @@
 }
 
 - (void) capture {
+    NSLog(@"capture");
     [self captureImageWithCompletionHander:^(UIImage *croppedImage/*, UIImage *initialImage, CIRectangleFeature *rectangleFeature*/) {
       if (self.onPictureTaken) {
             NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);

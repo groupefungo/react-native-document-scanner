@@ -90,19 +90,20 @@
 - (void)setupCameraView
 {
     [self createGLKView];
+    NSLog(@"setupCameraView");
 
     AVCaptureDevice *device = nil;
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *possibleDevice in devices) {
-        if (self.useFrontCam) {
+        /*if (self.useFrontCam) {
             if ([possibleDevice position] == AVCaptureDevicePositionFront) {
                 device = possibleDevice;
             }
-        } else {
+        } else {*/
             if ([possibleDevice position] != AVCaptureDevicePositionFront) {
                 device = possibleDevice;
             }
-        }
+        //}
     }
     if (!device) return;
 
@@ -149,6 +150,7 @@
 
 - (void)setCameraViewType:(IPDFCameraViewType)cameraViewType
 {
+    NSLog(@"setCameraViewType");
     UIBlurEffect * effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     UIVisualEffectView *viewWithBlurredBackground =[[UIVisualEffectView alloc] initWithEffect:effect];
     viewWithBlurredBackground.frame = self.bounds;
