@@ -349,14 +349,14 @@
 
     __weak typeof(self) weakSelf = self;
 
-    [weakSelf hideGLKView:YES completion:nil];
-//    [weakSelf hideGLKView:YES completion:^
-//    {
-//        [weakSelf hideGLKView:NO completion:^
-//        {
-//            [weakSelf hideGLKView:YES completion:nil];
-//        }];
-//    }];
+ //   [weakSelf hideGLKView:YES completion:nil];
+    [weakSelf hideGLKView:YES completion:^
+    {
+        [weakSelf hideGLKView:NO completion:^
+        {
+            [weakSelf hideGLKView:YES completion:nil];
+        }];
+    }];
 
     AVCaptureConnection *videoConnection = nil;
     for (AVCaptureConnection *connection in self.stillImageOutput.connections)
@@ -490,28 +490,28 @@
 {
     if (![rectangles count]) return nil;
 
-//    float halfPerimiterValue = 0;
+    float halfPerimiterValue = 0;
 
     CIRectangleFeature *biggestRectangle = [rectangles firstObject];
 
     for (CIRectangleFeature *rect in rectangles)
     {
-//        CGPoint p1 = rect.topLeft;
-//        CGPoint p2 = rect.topRight;
-//        CGFloat width = hypotf(p1.x - p2.x, p1.y - p2.y);
+        CGPoint p1 = rect.topLeft;
+        CGPoint p2 = rect.topRight;
+        CGFloat width = hypotf(p1.x - p2.x, p1.y - p2.y);
 
-//        CGPoint p3 = rect.topLeft;
-//        CGPoint p4 = rect.bottomLeft;
-//        CGFloat height = hypotf(p3.x - p4.x, p3.y - p4.y);
+        CGPoint p3 = rect.topLeft;
+        CGPoint p4 = rect.bottomLeft;
+        CGFloat height = hypotf(p3.x - p4.x, p3.y - p4.y);
 
-//        CGFloat currentHalfPerimiterValue = height + width;
+        CGFloat currentHalfPerimiterValue = height + width;
 
-//        if (halfPerimiterValue < currentHalfPerimiterValue)
-//        {
-//            halfPerimiterValue = currentHalfPerimiterValue;
+        if (halfPerimiterValue < currentHalfPerimiterValue)
+        {
+            halfPerimiterValue = currentHalfPerimiterValue;
         biggestRectangle = rect;
         break;
-//        }
+        }
     }
 
     if (self.delegate) {
