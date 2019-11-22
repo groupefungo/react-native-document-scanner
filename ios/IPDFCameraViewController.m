@@ -372,7 +372,7 @@
         if (videoConnection) break;
     }
 
-    [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error)
+    [weakSelf.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error)
      {
          NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
 
@@ -382,20 +382,20 @@
 
              if (weakSelf.cameraViewType == IPDFCameraViewTypeBlackAndWhite)
              {
-                 enhancedImage = [self filteredImageUsingEnhanceFilterOnImage:enhancedImage];
+                 enhancedImage = [weakSelf filteredImageUsingEnhanceFilterOnImage:enhancedImage];
              }
              else
              {
-                 enhancedImage = [self filteredImageUsingContrastFilterOnImage:enhancedImage];
+                 enhancedImage = [weakSelf filteredImageUsingContrastFilterOnImage:enhancedImage];
              }
 
              if (weakSelf.isBorderDetectionEnabled && rectangleDetectionConfidenceHighEnough(_imageDedectionConfidence))
              {
-                 CIRectangleFeature *rectangleFeature = [self biggestRectangleInRectangles:[[self highAccuracyRectangleDetector] featuresInImage:enhancedImage]];
+                 CIRectangleFeature *rectangleFeature = [weakSelf biggestRectangleInRectangles:[[weakSelf highAccuracyRectangleDetector] featuresInImage:enhancedImage]];
 
                  if (rectangleFeature)
                  {
-                     enhancedImage = [self correctPerspectiveForImage:enhancedImage withFeatures:rectangleFeature];
+                     enhancedImage = [weakSelf correctPerspectiveForImage:enhancedImage withFeatures:rectangleFeature];
 
                      UIGraphicsBeginImageContext(CGSizeMake(enhancedImage.extent.size.height, enhancedImage.extent.size.width));
                      [[UIImage imageWithCIImage:enhancedImage scale:1.0 orientation:UIImageOrientationRight] drawInRect:CGRectMake(0,0, enhancedImage.extent.size.height, enhancedImage.extent.size.width)];
@@ -426,7 +426,7 @@
 
 - (void)hideGLKView:(BOOL)hidden completion:(void(^)())completion
 {
-    /*[UIView animateWithDuration:0.1 animations:^
+    [/*UIView animateWithDuration:0.1 animations:^
     {
         _glkView.alpha = (hidden) ? 0.0 : 1.0;
     }*/
