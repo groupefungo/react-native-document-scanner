@@ -426,11 +426,7 @@
 
 - (void)hideGLKView:(BOOL)hidden completion:(void(^)())completion
 {
-    [UIView /*animateWithDuration:0.1 animations:^
-    {
-        _glkView.alpha = (hidden) ? 0.0 : 1.0;
-    }*/
-    completion:^(BOOL finished)
+    [UIView completion:^(BOOL finished)
     {
         if (!completion) return;
         completion();
