@@ -36,7 +36,7 @@
 
 - (void) capture {
     __weak typeof(self) weakSelf = self;
-    [weakSelf captureImageWithCompletionHander:^(UIImage *croppedImage/*, UIImage *initialImage, CIRectangleFeature *rectangleFeature*/) {
+    [weakSelf captureImageWithCompletionHander:^(UIImage *croppedImage, UIImage *initialImage, CIRectangleFeature *rectangleFeature) {
       if (weakSelf.onPictureTaken) {
             NSData *croppedImageData = UIImageJPEGRepresentation(croppedImage, weakSelf.quality);
 
