@@ -349,14 +349,14 @@
 
     __weak typeof(self) weakSelf = self;
 
- //   [weakSelf hideGLKView:YES completion:nil];
-    [weakSelf hideGLKView:YES completion:^
+    [weakSelf hideGLKView:NO completion:nil];
+ /*   [weakSelf hideGLKView:YES completion:^
     {
         [weakSelf hideGLKView:NO completion:^
         {
             [weakSelf hideGLKView:YES completion:nil];
         }];
-    }];
+    }];*/
 
     AVCaptureConnection *videoConnection = nil;
     for (AVCaptureConnection *connection in self.stillImageOutput.connections)
@@ -426,10 +426,10 @@
 
 - (void)hideGLKView:(BOOL)hidden completion:(void(^)())completion
 {
-    [UIView animateWithDuration:0.1 animations:^
+    /*[UIView animateWithDuration:0.1 animations:^
     {
         _glkView.alpha = (hidden) ? 0.0 : 1.0;
-    }
+    }*/
     completion:^(BOOL finished)
     {
         if (!completion) return;
