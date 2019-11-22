@@ -130,19 +130,19 @@
     AVCaptureConnection *connection = [dataOutput.connections firstObject];
     [connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
 
-//    if (device.isFlashAvailable)
-//    {
-//        [device lockForConfiguration:nil];
-//        [device setFlashMode:AVCaptureFlashModeOff];
-//        [device unlockForConfiguration];
-//
-//        if ([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus])
-//        {
-//            [device lockForConfiguration:nil];
-//            [device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
-//            [device unlockForConfiguration];
-//        }
-//    }
+    if (device.isFlashAvailable)
+    {
+        [device lockForConfiguration:nil];
+        [device setFlashMode:AVCaptureFlashModeOff];
+        [device unlockForConfiguration];
+
+        if ([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus])
+        {
+            [device lockForConfiguration:nil];
+            [device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
+            [device unlockForConfiguration];
+        }
+    }
 
     [session commitConfiguration];
 }
@@ -341,11 +341,9 @@
     }
 }
 
-- (void)captureImageWithCompletionHander:(void(^)(UIImage *data/*, id initialData, CIRectangleFeature *rectangleFeature*/))completionHandler
+- (void)captureImageWithCompletionHander:(void(^)(UIImage *data, UIImage *initialData, CIRectangleFeature *rectangleFeature))completionHandler
 {
     if (_isCapturing) return;
-
-    _isCapturing = YES;
 
     __weak typeof(self) weakSelf = self;
 
@@ -357,6 +355,8 @@
             [weakSelf hideGLKView:YES completion:nil];
         }];
     }];
+
+    _isCapturing = YES;
 
     AVCaptureConnection *videoConnection = nil;
     for (AVCaptureConnection *connection in weakSelf.stillImageOutput.connections)
@@ -400,16 +400,16 @@
                      UIGraphicsBeginImageContext(CGSizeMake(enhancedImage.extent.size.height, enhancedImage.extent.size.width));
                      [[UIImage imageWithCIImage:enhancedImage scale:1.0 orientation:UIImageOrientationRight] drawInRect:CGRectMake(0,0, enhancedImage.extent.size.height, enhancedImage.extent.size.width)];
                      UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-                     //UIImage *initialImage = [UIImage imageWithData:imageData];
+                     UIImage *initialImage = [UIImage imageWithData:imageData];
                      UIGraphicsEndImageContext();
 
                      [weakSelf hideGLKView:NO completion:nil];
-                     completionHandler(image/*, initialImage, rectangleFeature*/);
+                     completionHandler(image, initialImage, rectangleFeature);
                  }
              } else {
                  [weakSelf hideGLKView:NO completion:nil];
                  UIImage *initialImage = [UIImage imageWithData:imageData];
-                 completionHandler(initialImage/*, initialImage, nil*/);
+                 completionHandler(initialImage, initialImage, nil);
              }
 
          }
@@ -417,7 +417,7 @@
          {
              [weakSelf hideGLKView:NO completion:nil];
              UIImage *initialImage = [UIImage imageWithData:imageData];
-             completionHandler(initialImage/*, initialImage, nil*/);
+             completionHandler(initialImage, initialImage, nil);
          }
 
          _isCapturing = NO;
@@ -428,7 +428,7 @@
 {
     [UIView animateWithDuration:0.1 animations:^
     {
-        _glkView.alpha = 0.1;
+        _glkView.alpha = (hidden) ? 0.0 : 1.0;
     }
     completion:^(BOOL finished)
     {
@@ -511,7 +511,7 @@
         {
             halfPerimiterValue = currentHalfPerimiterValue;
         biggestRectangle = rect;
-        break;
+        //break;
         }
     }
 

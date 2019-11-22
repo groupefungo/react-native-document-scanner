@@ -46,25 +46,25 @@
                                                     , initialImage.size.height)];
                 initialImage = UIGraphicsGetImageFromCurrentImageContext();
                 UIGraphicsEndImageContext();
-            }
+            }*/
             NSData *initialImageData = UIImageJPEGRepresentation(initialImage, self.quality);
-*/
+
             /*
              RectangleCoordinates expects a rectanle viewed from portrait,
              while rectangleFeature returns a rectangle viewed from landscape, which explains the nonsense of the mapping below.
              Sorry about that.
              */
-            /*NSDictionary *rectangleCoordinates = rectangleFeature ? @{
+            NSDictionary *rectangleCoordinates = rectangleFeature ? @{
                                      @"topLeft": @{ @"y": @(rectangleFeature.bottomLeft.x + 30), @"x": @(rectangleFeature.bottomLeft.y)},
                                      @"topRight": @{ @"y": @(rectangleFeature.topLeft.x + 30), @"x": @(rectangleFeature.topLeft.y)},
                                      @"bottomLeft": @{ @"y": @(rectangleFeature.bottomRight.x), @"x": @(rectangleFeature.bottomRight.y)},
                                      @"bottomRight": @{ @"y": @(rectangleFeature.topRight.x), @"x": @(rectangleFeature.topRight.y)},
-                                     } : [NSNull null];*/
+                                     } : [NSNull null];
             if (weakSelf.useBase64) {
               weakSelf.onPictureTaken(@{
-                                    @"croppedImage": [croppedImageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength]/*,
+                                    @"croppedImage": [croppedImageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength],
                                     @"initialImage": [initialImageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength],
-                                    @"rectangleCoordinates": rectangleCoordinates*/ });
+                                    @"rectangleCoordinates": rectangleCoordinates });
             }
             else {
                 NSString *dir = NSTemporaryDirectory();
@@ -73,15 +73,15 @@
                 }*/
                //NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.png",(int)[NSDate date].timeIntervalSince1970]];
                NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
-               //NSString *initialFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"initial_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
+               NSString *initialFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"initial_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
 
               [croppedImageData writeToFile:croppedFilePath atomically:YES];
-              //[initialImageData writeToFile:initialFilePath atomically:YES];
+              [initialImageData writeToFile:initialFilePath atomically:YES];
 
                weakSelf.onPictureTaken(@{
-                                     @"croppedImage": croppedFilePath /*,
+                                     @"croppedImage": croppedFilePath,
                                      @"initialImage": initialFilePath,
-                                     @"rectangleCoordinates": rectangleCoordinates*/ });
+                                     @"rectangleCoordinates": rectangleCoordinates });
             }
         }
 
