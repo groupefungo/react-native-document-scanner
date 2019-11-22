@@ -90,7 +90,6 @@
 - (void)setupCameraView
 {
     [self createGLKView];
-    NSLog(@"setupCameraView");
 
     AVCaptureDevice *device = nil;
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
@@ -150,7 +149,6 @@
 
 - (void)setCameraViewType:(IPDFCameraViewType)cameraViewType
 {
-    NSLog(@"setCameraViewType");
     UIBlurEffect * effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     UIVisualEffectView *viewWithBlurredBackground =[[UIVisualEffectView alloc] initWithEffect:effect];
     viewWithBlurredBackground.frame = self.bounds;
@@ -346,9 +344,9 @@
 - (void)captureImageWithCompletionHander:(void(^)(UIImage *data/*, id initialData, CIRectangleFeature *rectangleFeature*/))completionHandler
 {
     if (_isCapturing) return;
-    
+
     _isCapturing = YES;
-    
+
     __weak typeof(self) weakSelf = self;
 
     [weakSelf hideGLKView:YES completion:nil];

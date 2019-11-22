@@ -15,7 +15,6 @@
 
 
 - (void) didDetectRectangle:(CIRectangleFeature *)rectangle withType:(IPDFRectangeType)type {
-    NSLog(@"didDetectRectangle");
     switch (type) {
         case IPDFRectangeTypeGood:
             self.stableCounter ++;
@@ -34,10 +33,9 @@
 }
 
 - (void) capture {
-    NSLog(@"capture");
     [self captureImageWithCompletionHander:^(UIImage *croppedImage/*, UIImage *initialImage, CIRectangleFeature *rectangleFeature*/) {
       if (self.onPictureTaken) {
-            NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);
+            NSData *croppedImageData = UIImageJPEGRepresentation(croppedImage, self.quality);
 
             /*if (initialImage.imageOrientation != UIImageOrientationUp) {
                 UIGraphicsBeginImageContextWithOptions(initialImage.size, false, initialImage.scale);
@@ -70,7 +68,8 @@
                 /*if (self.saveInAppDocument) {
                     dir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
                 }*/
-               NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.png",(int)[NSDate date].timeIntervalSince1970]];
+               //NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.png",(int)[NSDate date].timeIntervalSince1970]];
+               NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
                //NSString *initialFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"initial_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
 
               [croppedImageData writeToFile:croppedFilePath atomically:YES];

@@ -39,7 +39,6 @@ RCT_EXPORT_METHOD(capture) {
 
 - (UIView*) view {
     _scannerView = [[DocumentScannerView alloc] init];
-    NSLog(@"welcome to RNPdfScannerManager");
     return _scannerView;
 }
 
