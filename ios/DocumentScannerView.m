@@ -5,37 +5,40 @@
 
 - (instancetype)init {
     self = [super init];
-    if (self) {
-        [self setEnableBorderDetection:YES];
-        [self setDelegate: self];
+    __weak typeof(self) weakSelf = self;
+    if (weakSelf) {
+        [weakSelf setEnableBorderDetection:YES];
+        [weakSelf setDelegate: weakSelf];
     }
 
-    return self;
+    return weakSelf;
 }
 
 
 - (void) didDetectRectangle:(CIRectangleFeature *)rectangle withType:(IPDFRectangeType)type {
+    __weak typeof(self) weakSelf = self;
     switch (type) {
         case IPDFRectangeTypeGood:
-            self.stableCounter ++;
+            weakSelf.stableCounter ++;
             break;
         default:
-            self.stableCounter = 0;
+            weakSelf.stableCounter = 0;
             break;
     }
     /*if (self.onRectangleDetect) {
         self.onRectangleDetect(@{@"stableCounter": @(self.stableCounter), @"lastDetectionType": @(type)});
     }*/
 
-    if (self.stableCounter > self.detectionCountBeforeCapture){
-        [self capture];
+    if (weakSelf.stableCounter > weakSelf.detectionCountBeforeCapture){
+        [weakSelf capture];
     }
 }
 
 - (void) capture {
-    [self captureImageWithCompletionHander:^(UIImage *croppedImage/*, UIImage *initialImage, CIRectangleFeature *rectangleFeature*/) {
-      if (self.onPictureTaken) {
-            NSData *croppedImageData = UIImageJPEGRepresentation(croppedImage, self.quality);
+    __weak typeof(self) weakSelf = self;
+    [weakSelf captureImageWithCompletionHander:^(UIImage *croppedImage/*, UIImage *initialImage, CIRectangleFeature *rectangleFeature*/) {
+      if (weakSelf.onPictureTaken) {
+            NSData *croppedImageData = UIImageJPEGRepresentation(croppedImage, weakSelf.quality);
 
             /*if (initialImage.imageOrientation != UIImageOrientationUp) {
                 UIGraphicsBeginImageContextWithOptions(initialImage.size, false, initialImage.scale);
@@ -57,8 +60,8 @@
                                      @"bottomLeft": @{ @"y": @(rectangleFeature.bottomRight.x), @"x": @(rectangleFeature.bottomRight.y)},
                                      @"bottomRight": @{ @"y": @(rectangleFeature.topRight.x), @"x": @(rectangleFeature.topRight.y)},
                                      } : [NSNull null];*/
-            if (self.useBase64) {
-              self.onPictureTaken(@{
+            if (weakSelf.useBase64) {
+              weakSelf.onPictureTaken(@{
                                     @"croppedImage": [croppedImageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength]/*,
                                     @"initialImage": [initialImageData base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength],
                                     @"rectangleCoordinates": rectangleCoordinates*/ });
@@ -75,15 +78,15 @@
               [croppedImageData writeToFile:croppedFilePath atomically:YES];
               //[initialImageData writeToFile:initialFilePath atomically:YES];
 
-               self.onPictureTaken(@{
+               weakSelf.onPictureTaken(@{
                                      @"croppedImage": croppedFilePath /*,
                                      @"initialImage": initialFilePath,
                                      @"rectangleCoordinates": rectangleCoordinates*/ });
             }
         }
 
-        if (!self.captureMultiple) {
-          [self stop];
+        if (!weakSelf.captureMultiple) {
+          [weakSelf stop];
         }
     }];
 

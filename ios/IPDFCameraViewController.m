@@ -63,10 +63,10 @@
     self.forceStop = NO;
 }
 
-- (void)dealloc
+/*- (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
+}*/
 
 - (void)createGLKView
 {
@@ -349,17 +349,17 @@
 
     __weak typeof(self) weakSelf = self;
 
-    [weakSelf hideGLKView:NO completion:nil];
- /*   [weakSelf hideGLKView:YES completion:^
+    //[weakSelf hideGLKView:YES completion:nil];
+    [weakSelf hideGLKView:YES completion:^
     {
         [weakSelf hideGLKView:NO completion:^
         {
             [weakSelf hideGLKView:YES completion:nil];
         }];
-    }];*/
+    }];
 
     AVCaptureConnection *videoConnection = nil;
-    for (AVCaptureConnection *connection in self.stillImageOutput.connections)
+    for (AVCaptureConnection *connection in weakSelf.stillImageOutput.connections)
     {
         for (AVCaptureInputPort *port in [connection inputPorts])
         {
@@ -428,7 +428,7 @@
 {
     [UIView animateWithDuration:0.1 animations:^
     {
-        _glkView.alpha = 0.0;
+        _glkView.alpha = 0.1;
     }
     completion:^(BOOL finished)
     {
@@ -440,7 +440,8 @@
 - (CIImage *)filteredImageUsingEnhanceFilterOnImage:(CIImage *)image
 {
     [self start];
-    return [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, image, @"inputBrightness", @(self.brightness), @"inputContrast", @(self.contrast), @"inputSaturation", @(self.saturation), nil].outputImage;
+    __weak typeof(self) weakSelf = self;
+    return [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, image, @"inputBrightness", @(weakSelf.brightness), @"inputContrast", @(weakSelf.contrast), @"inputSaturation", @(weakSelf.saturation), nil].outputImage;
 }
 
 - (CIImage *)filteredImageUsingContrastFilterOnImage:(CIImage *)image
@@ -514,8 +515,9 @@
         }
     }
 
-    if (self.delegate) {
-        [self.delegate didDetectRectangle:biggestRectangle withType:[self typeForRectangle:biggestRectangle]];
+    __weak typeof(self) weakSelf = self;
+    if (weakSelf.delegate) {
+        [weakSelf.delegate didDetectRectangle:biggestRectangle withType:[weakSelf typeForRectangle:biggestRectangle]];
     }
 
     return biggestRectangle;
