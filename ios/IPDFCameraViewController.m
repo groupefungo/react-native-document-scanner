@@ -351,6 +351,7 @@
     
     __weak typeof(self) weakSelf = self;
 
+    [weakSelf hideGLKView:YES completion:nil];
 //    [weakSelf hideGLKView:YES completion:^
 //    {
 //        [weakSelf hideGLKView:NO completion:^
