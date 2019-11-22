@@ -256,7 +256,7 @@
     [self hideGLKView:YES completion:nil];
 }
 
-/*- (void)setEnableTorch:(BOOL)enableTorch
+- (void)setEnableTorch:(BOOL)enableTorch
 {
     _enableTorch = enableTorch;
 
@@ -274,15 +274,15 @@
         }
         [device unlockForConfiguration];
     }
-}*/
+}
 
-/*- (void)setUseFrontCam:(BOOL)useFrontCam
+- (void)setUseFrontCam:(BOOL)useFrontCam
 {
     _useFrontCam = useFrontCam;
     [self stop];
     [self setupCameraView];
     [self start];
-}*/
+}
 
 
 - (void)setContrast:(float)contrast
