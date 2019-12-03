@@ -157,7 +157,8 @@
     _cameraViewType = cameraViewType;
 
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+    // dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
     {
         [viewWithBlurredBackground removeFromSuperview];
     });
@@ -279,9 +280,9 @@
 - (void)setUseFrontCam:(BOOL)useFrontCam
 {
     _useFrontCam = useFrontCam;
-    [self stop];
+   /* [self stop];
     [self setupCameraView];
-    [self start];
+    [self start];*/
 }
 
 

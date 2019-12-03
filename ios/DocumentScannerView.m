@@ -25,9 +25,9 @@
             weakSelf.stableCounter = 0;
             break;
     }
-    /*if (self.onRectangleDetect) {
+    if (self.onRectangleDetect) {
         self.onRectangleDetect(@{@"stableCounter": @(self.stableCounter), @"lastDetectionType": @(type)});
-    }*/
+    }
 
     if (weakSelf.stableCounter > weakSelf.detectionCountBeforeCapture){
         [weakSelf capture];
