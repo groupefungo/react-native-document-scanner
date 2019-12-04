@@ -63,10 +63,10 @@
     self.forceStop = NO;
 }
 
-/*- (void)dealloc
+- (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}*/
+}
 
 - (void)createGLKView
 {
@@ -94,15 +94,15 @@
     AVCaptureDevice *device = nil;
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *possibleDevice in devices) {
-        /*if (self.useFrontCam) {
+        if (self.useFrontCam) {
             if ([possibleDevice position] == AVCaptureDevicePositionFront) {
                 device = possibleDevice;
             }
-        } else {*/
+        } else {
             if ([possibleDevice position] != AVCaptureDevicePositionFront) {
                 device = possibleDevice;
             }
-        //}
+        }
     }
     if (!device) return;
 
@@ -156,9 +156,7 @@
 
     _cameraViewType = cameraViewType;
 
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
-    // dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
     {
         [viewWithBlurredBackground removeFromSuperview];
     });
@@ -280,15 +278,14 @@
 - (void)setUseFrontCam:(BOOL)useFrontCam
 {
     _useFrontCam = useFrontCam;
-   /* [self stop];
+    [self stop];
     [self setupCameraView];
-    [self start];*/
+    [self start];
 }
 
 
 - (void)setContrast:(float)contrast
 {
-
     _contrast = contrast;
 }
 
@@ -306,7 +303,6 @@
 {
     _detectionRefreshRateInMS = detectionRefreshRateInMS;
 }
-
 
 - (void)focusAtPoint:(CGPoint)point completionHandler:(void(^)())completionHandler
 {
@@ -398,14 +394,15 @@
                  {
                      enhancedImage = [weakSelf correctPerspectiveForImage:enhancedImage withFeatures:rectangleFeature];
 
-                     UIGraphicsBeginImageContext(CGSizeMake(enhancedImage.extent.size.height, enhancedImage.extent.size.width));
-                     [[UIImage imageWithCIImage:enhancedImage scale:1.0 orientation:UIImageOrientationRight] drawInRect:CGRectMake(0,0, enhancedImage.extent.size.height, enhancedImage.extent.size.width)];
-                     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+                     CIContext* context = [CIContext context];
+                     CGImageRef cgCroppedImage = [context createCGImage:enhancedImage fromRect:enhancedImage.extent];
+                     UIImage* newImage = [UIImage imageWithCGImage:cgCroppedImage scale:1.0 orientation:UIImageOrientationRight];
+                     CGImageRelease(cgCroppedImage);
+
                      UIImage *initialImage = [UIImage imageWithData:imageData];
-                     UIGraphicsEndImageContext();
 
                      [weakSelf hideGLKView:NO completion:nil];
-                     completionHandler(image, initialImage, rectangleFeature);
+                     completionHandler(newImage, initialImage, rectangleFeature);
                  }
              } else {
                  [weakSelf hideGLKView:NO completion:nil];
@@ -511,8 +508,7 @@
         if (halfPerimiterValue < currentHalfPerimiterValue)
         {
             halfPerimiterValue = currentHalfPerimiterValue;
-        biggestRectangle = rect;
-        //break;
+            biggestRectangle = rect;
         }
     }
 
