@@ -94,15 +94,11 @@
     AVCaptureDevice *device = nil;
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *possibleDevice in devices) {
-        if (self.useFrontCam) {
-            if ([possibleDevice position] == AVCaptureDevicePositionFront) {
-                device = possibleDevice;
-            }
-        } else {
-            if ([possibleDevice position] != AVCaptureDevicePositionFront) {
-                device = possibleDevice;
-            }
+
+        if ([possibleDevice position] != AVCaptureDevicePositionFront) {
+            device = possibleDevice;
         }
+
     }
     if (!device) return;
 
@@ -156,7 +152,7 @@
 
     _cameraViewType = cameraViewType;
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
     {
         [viewWithBlurredBackground removeFromSuperview];
     });
@@ -278,7 +274,7 @@
 - (void)setUseFrontCam:(BOOL)useFrontCam
 {
     _useFrontCam = useFrontCam;
-    [self stop];
+
     [self setupCameraView];
     [self start];
 }
@@ -304,7 +300,7 @@
     _detectionRefreshRateInMS = detectionRefreshRateInMS;
 }
 
-- (void)focusAtPoint:(CGPoint)point completionHandler:(void(^)())completionHandler
+- (void)focusAtPoint:(CGPoint)point completionHandler:(void(^)(void))completionHandler
 {
     AVCaptureDevice *device = self.captureDevice;
     CGPoint pointOfInterest = CGPointZero;
@@ -345,13 +341,7 @@
     __weak typeof(self) weakSelf = self;
 
     [weakSelf hideGLKView:YES completion:nil];
-    /*[weakSelf hideGLKView:YES completion:^
-    {
-        [weakSelf hideGLKView:NO completion:^
-        {
-            [weakSelf hideGLKView:YES completion:nil];
-        }];
-    }];*/
+
 
     _isCapturing = YES;
 
@@ -386,20 +376,19 @@
                  enhancedImage = [weakSelf filteredImageUsingContrastFilterOnImage:enhancedImage];
              }
 
-             if (weakSelf.isBorderDetectionEnabled && rectangleDetectionConfidenceHighEnough(_imageDedectionConfidence))
+             if (weakSelf.isBorderDetectionEnabled && rectangleDetectionConfidenceHighEnough(self->_imageDedectionConfidence))
              {
                  CIRectangleFeature *rectangleFeature = [weakSelf biggestRectangleInRectangles:[[weakSelf highAccuracyRectangleDetector] featuresInImage:enhancedImage]];
 
                  if (rectangleFeature)
                  {
-                     enhancedImage = [weakSelf correctPerspectiveForImage:enhancedImage withFeatures:rectangleFeature];
 
                      CIContext* context = [CIContext context];
-                     CGImageRef cgCroppedImage = [context createCGImage:enhancedImage fromRect:enhancedImage.extent];
-                     UIImage* newImage = [UIImage imageWithCGImage:cgCroppedImage scale:1.0 orientation:UIImageOrientationRight];
-                     CGImageRelease(cgCroppedImage);
+                     CGImageRef cgCroppedImage = [context createCGImage:enhancedImage fromRect:rectangleFeature.bounds];
 
+                     UIImage* newImage = [UIImage imageWithCGImage:cgCroppedImage];
                      UIImage *initialImage = [UIImage imageWithData:imageData];
+                     CGImageRelease(cgCroppedImage);
 
                      [weakSelf hideGLKView:NO completion:nil];
                      completionHandler(newImage, initialImage, rectangleFeature);
@@ -418,15 +407,15 @@
              completionHandler(initialImage, initialImage, nil);
          }
 
-         _isCapturing = NO;
+         self->_isCapturing = NO;
      }];
 }
 
-- (void)hideGLKView:(BOOL)hidden completion:(void(^)())completion
+- (void)hideGLKView:(BOOL)hidden completion:(void(^)(void))completion
 {
     [UIView animateWithDuration:0.1 animations:^
     {
-        _glkView.alpha = (hidden) ? 0.0 : 1.0;
+        self->_glkView.alpha = (hidden) ? 0.0 : 1.0;
     }
     completion:^(BOOL finished)
     {
@@ -437,7 +426,7 @@
 
 - (CIImage *)filteredImageUsingEnhanceFilterOnImage:(CIImage *)image
 {
-    [self start];
+
     __weak typeof(self) weakSelf = self;
     return [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, image, @"inputBrightness", @(weakSelf.brightness), @"inputContrast", @(weakSelf.contrast), @"inputSaturation", @(weakSelf.saturation), nil].outputImage;
 }
@@ -454,7 +443,6 @@
   CGPoint newRight = CGPointMake(rectangleFeature.topRight.x, rectangleFeature.topRight.y);
   CGPoint newBottomLeft = CGPointMake(rectangleFeature.bottomLeft.x + 30, rectangleFeature.bottomLeft.y);
   CGPoint newBottomRight = CGPointMake(rectangleFeature.bottomRight.x, rectangleFeature.bottomRight.y);
-
 
   rectangleCoordinates[@"inputTopLeft"] = [CIVector vectorWithCGPoint:newLeft];
   rectangleCoordinates[@"inputTopRight"] = [CIVector vectorWithCGPoint:newRight];
