@@ -109,6 +109,8 @@
     [self.captureSession beginConfiguration];
     self.captureDevice = device;
 
+    self.sessionQueue = dispatch_queue_create( "session queue", DISPATCH_QUEUE_SERIAL );
+
     NSError *error = nil;
     AVCaptureDeviceInput* input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto;
