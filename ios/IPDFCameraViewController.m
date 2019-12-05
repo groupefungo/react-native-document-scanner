@@ -74,14 +74,14 @@
     if (self.context) return;
 
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    GLKView *view = [[GLKView alloc] initWithFrame:self.bounds];
-    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    view.translatesAutoresizingMaskIntoConstraints = YES;
-    view.context = self.context;
-    view.contentScaleFactor = 1.0f;
-    view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+    _glkView = [[GLKView alloc] initWithFrame:self.bounds];
+    _glkView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _glkView.translatesAutoresizingMaskIntoConstraints = YES;
+    _glkView.context = self.context;
+    _glkView.contentScaleFactor = 1.0f;
+    _glkView.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     [self insertSubview:view atIndex:0];
-    _glkView = view;
+    // _glkView = view;
     glGenRenderbuffers(1, &_renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
     _coreImageContext = [CIContext contextWithEAGLContext:self.context];
@@ -105,9 +105,7 @@
 
     _imageDedectionConfidence = 0.0;
 
-    // AVCaptureSession *session = [[AVCaptureSession alloc] init];
     self.captureSession = [[AVCaptureSession alloc] init];
-    // self.captureSession = session;
     [self.captureSession beginConfiguration];
     self.captureDevice = device;
 
@@ -344,7 +342,6 @@
 
     [weakSelf hideGLKView:YES completion:nil];
 
-
     _isCapturing = YES;
 
     AVCaptureConnection *videoConnection = nil;
@@ -387,12 +384,10 @@
 
                      CIContext* context = [CIContext context];
                      CGImageRef cgCroppedImage = [context createCGImage:enhancedImage fromRect:rectangleFeature.bounds];
-
                      UIImage* newImage = [UIImage imageWithCGImage:cgCroppedImage];
                      UIImage *initialImage = [UIImage imageWithData:imageData];
                      CGImageRelease(cgCroppedImage);
 
-                     [weakSelf hideGLKView:NO completion:nil];
                      completionHandler(newImage, initialImage, rectangleFeature);
                  }
              } else {
@@ -400,7 +395,6 @@
                  UIImage *initialImage = [UIImage imageWithData:imageData];
                  completionHandler(initialImage, initialImage, nil);
              }
-
          }
          else
          {
@@ -428,7 +422,6 @@
 
 - (CIImage *)filteredImageUsingEnhanceFilterOnImage:(CIImage *)image
 {
-
     __weak typeof(self) weakSelf = self;
     return [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, image, @"inputBrightness", @(weakSelf.brightness), @"inputContrast", @(weakSelf.contrast), @"inputSaturation", @(weakSelf.saturation), nil].outputImage;
 }
