@@ -85,7 +85,6 @@
     glGenRenderbuffers(1, &_renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
     _coreImageContext = [CIContext contextWithEAGLContext:self.context];
-    [view release]
     [EAGLContext setCurrentContext:self.context];
 }
 
@@ -159,8 +158,6 @@
     {
         [viewWithBlurredBackground removeFromSuperview];
     });
-
-    [viewWithBlurredBackground release];
 }
 
 -(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
