@@ -410,10 +410,9 @@
 
 - (void)hideGLKView:(BOOL)hidden completion:(void(^)(void))completion
 {
-    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.1 animations:^
     {
-        weakSelf->_glkView.alpha = (hidden) ? 0.0 : 1.0;
+        self->_glkView.alpha = (hidden) ? 0.0 : 1.0;
     }
     completion:^(BOOL finished)
     {
