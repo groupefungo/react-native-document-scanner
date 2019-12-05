@@ -5,30 +5,26 @@
 
 - (instancetype)init {
     self = [super init];
-    __weak typeof(self) weakSelf = self;
-    if (weakSelf) {
-        [weakSelf setEnableBorderDetection:YES];
-        [weakSelf setDelegate: weakSelf];
+    if (self) {
+        [self setEnableBorderDetection:YES];
+        [self setDelegate: self];
     }
 
-    return weakSelf;
+    return self;
 }
 
-
 - (void) didDetectRectangle:(CIRectangleFeature *)rectangle withType:(IPDFRectangeType)type {
-    __weak typeof(self) weakSelf = self;
     switch (type) {
         case IPDFRectangeTypeGood:
-            weakSelf.stableCounter ++;
+            self.stableCounter ++;
             break;
         default:
-            weakSelf.stableCounter = 0;
+            self.stableCounter = 0;
             break;
     }
 
-
-    if (weakSelf.stableCounter > weakSelf.detectionCountBeforeCapture){
-        [weakSelf capture];
+    if (self.stableCounter > self.detectionCountBeforeCapture){
+        [self capture];
     }
 }
 
@@ -37,7 +33,7 @@
     [weakSelf captureImageWithCompletionHander:^(UIImage *croppedImage, UIImage *initialImage, CIRectangleFeature *rectangleFeature) {
       if (weakSelf.onPictureTaken) {
             NSData *croppedImageData = UIImageJPEGRepresentation(croppedImage, weakSelf.quality);
-            NSData *initialImageData = UIImageJPEGRepresentation(initialImage, self.quality);
+            NSData *initialImageData = UIImageJPEGRepresentation(initialImage, weakSelf.quality);
 
             /*
              RectangleCoordinates expects a rectanle viewed from portrait,

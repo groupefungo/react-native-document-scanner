@@ -81,7 +81,6 @@
     _glkView.contentScaleFactor = 1.0f;
     _glkView.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     [self insertSubview:_glkView atIndex:0];
-    // _glkView = view;
     glGenRenderbuffers(1, &_renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
     _coreImageContext = [CIContext contextWithEAGLContext:self.context];
@@ -145,10 +144,11 @@
 
 - (void)setCameraViewType:(IPDFCameraViewType)cameraViewType
 {
+    __weak typeof(self) weakSelf = self;
     UIBlurEffect * effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     UIVisualEffectView *viewWithBlurredBackground =[[UIVisualEffectView alloc] initWithEffect:effect];
-    viewWithBlurredBackground.frame = self.bounds;
-    [self insertSubview:viewWithBlurredBackground aboveSubview:_glkView];
+    viewWithBlurredBackground.frame = weakSelf.bounds;
+    [weakSelf insertSubview:viewWithBlurredBackground aboveSubview:_glkView];
 
     _cameraViewType = cameraViewType;
 
@@ -160,8 +160,7 @@
 
 -(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    if (self.forceStop) return;
-    if (_isStopped || _isCapturing || !CMSampleBufferIsValid(sampleBuffer)) return;
+    if (self.forceStop || _isStopped || _isCapturing || !CMSampleBufferIsValid(sampleBuffer)) return;
 
     CVPixelBufferRef pixelBuffer = (CVPixelBufferRef)CMSampleBufferGetImageBuffer(sampleBuffer);
 
@@ -243,19 +242,23 @@
 - (void)stop
 {
     _isStopped = YES;
+    __weak typeof(self) weakSelf = self;
 
-    [self.captureSession stopRunning];
+    [weakSelf.captureSession stopRunning];
 
-    [_borderDetectTimeKeeper invalidate];
+    if (_borderDetectTimeKeeper) {
+        [_borderDetectTimeKeeper invalidate];
+    }
 
-    [self hideGLKView:YES completion:nil];
+    [weakSelf hideGLKView:YES completion:nil];
 }
 
 - (void)setEnableTorch:(BOOL)enableTorch
 {
     _enableTorch = enableTorch;
+    __weak typeof(self) weakSelf = self;
 
-    AVCaptureDevice *device = self.captureDevice;
+    AVCaptureDevice *device = weakSelf.captureDevice;
     if ([device hasTorch] && [device hasFlash])
     {
         [device lockForConfiguration:nil];
@@ -274,9 +277,9 @@
 - (void)setUseFrontCam:(BOOL)useFrontCam
 {
     _useFrontCam = useFrontCam;
-
-    [self setupCameraView];
-    [self start];
+    __weak typeof(self) weakSelf = self;
+    [weakSelf setupCameraView];
+    [weakSelf start];
 }
 
 
@@ -336,16 +339,14 @@
 
 - (void)captureImageWithCompletionHander:(void(^)(UIImage *data, UIImage *initialData, CIRectangleFeature *rectangleFeature))completionHandler
 {
-    if (_isCapturing) return;
+    if (_isStopped || _isCapturing) return;
 
-    __weak typeof(self) weakSelf = self;
-
-    [weakSelf hideGLKView:YES completion:nil];
+    [self hideGLKView:YES completion:nil];
 
     _isCapturing = YES;
 
     AVCaptureConnection *videoConnection = nil;
-    for (AVCaptureConnection *connection in weakSelf.stillImageOutput.connections)
+    for (AVCaptureConnection *connection in self.stillImageOutput.connections)
     {
         for (AVCaptureInputPort *port in [connection inputPorts])
         {
@@ -358,26 +359,26 @@
         if (videoConnection) break;
     }
 
-    [weakSelf.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error)
+    [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error)
      {
          NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
 
-         if (weakSelf.cameraViewType == IPDFCameraViewTypeBlackAndWhite || weakSelf.isBorderDetectionEnabled)
+         if (self.cameraViewType == IPDFCameraViewTypeBlackAndWhite || self.isBorderDetectionEnabled)
          {
              CIImage *enhancedImage = [CIImage imageWithData:imageData];
 
-             if (weakSelf.cameraViewType == IPDFCameraViewTypeBlackAndWhite)
+             if (self.cameraViewType == IPDFCameraViewTypeBlackAndWhite)
              {
-                 enhancedImage = [weakSelf filteredImageUsingEnhanceFilterOnImage:enhancedImage];
+                 enhancedImage = [self filteredImageUsingEnhanceFilterOnImage:enhancedImage];
              }
              else
              {
-                 enhancedImage = [weakSelf filteredImageUsingContrastFilterOnImage:enhancedImage];
+                 enhancedImage = [self filteredImageUsingContrastFilterOnImage:enhancedImage];
              }
 
-             if (weakSelf.isBorderDetectionEnabled && rectangleDetectionConfidenceHighEnough(self->_imageDedectionConfidence))
+             if (self.isBorderDetectionEnabled && rectangleDetectionConfidenceHighEnough(self->_imageDedectionConfidence))
              {
-                 CIRectangleFeature *rectangleFeature = [weakSelf biggestRectangleInRectangles:[[weakSelf highAccuracyRectangleDetector] featuresInImage:enhancedImage]];
+                 CIRectangleFeature *rectangleFeature = [self biggestRectangleInRectangles:[[self highAccuracyRectangleDetector] featuresInImage:enhancedImage]];
 
                  if (rectangleFeature)
                  {
@@ -391,14 +392,14 @@
                      completionHandler(newImage, initialImage, rectangleFeature);
                  }
              } else {
-                 [weakSelf hideGLKView:NO completion:nil];
+                 [self hideGLKView:NO completion:nil];
                  UIImage *initialImage = [UIImage imageWithData:imageData];
                  completionHandler(initialImage, initialImage, nil);
              }
          }
          else
          {
-             [weakSelf hideGLKView:NO completion:nil];
+             [self hideGLKView:NO completion:nil];
              UIImage *initialImage = [UIImage imageWithData:imageData];
              completionHandler(initialImage, initialImage, nil);
          }
@@ -409,9 +410,10 @@
 
 - (void)hideGLKView:(BOOL)hidden completion:(void(^)(void))completion
 {
+    __weak typeof(self) weakSelf = self;
     [UIView animateWithDuration:0.1 animations:^
     {
-        self->_glkView.alpha = (hidden) ? 0.0 : 1.0;
+        weakSelf->_glkView.alpha = (hidden) ? 0.0 : 1.0;
     }
     completion:^(BOOL finished)
     {
@@ -422,8 +424,7 @@
 
 - (CIImage *)filteredImageUsingEnhanceFilterOnImage:(CIImage *)image
 {
-    __weak typeof(self) weakSelf = self;
-    return [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, image, @"inputBrightness", @(weakSelf.brightness), @"inputContrast", @(weakSelf.contrast), @"inputSaturation", @(weakSelf.saturation), nil].outputImage;
+    return [CIFilter filterWithName:@"CIColorControls" keysAndValues:kCIInputImageKey, image, @"inputBrightness", @(self.brightness), @"inputContrast", @(self.contrast), @"inputSaturation", @(self.saturation), nil].outputImage;
 }
 
 - (CIImage *)filteredImageUsingContrastFilterOnImage:(CIImage *)image
@@ -495,9 +496,8 @@
         }
     }
 
-    __weak typeof(self) weakSelf = self;
-    if (weakSelf.delegate) {
-        [weakSelf.delegate didDetectRectangle:biggestRectangle withType:[weakSelf typeForRectangle:biggestRectangle]];
+    if (self.delegate) {
+        [self.delegate didDetectRectangle:biggestRectangle withType:[self typeForRectangle:biggestRectangle]];
     }
 
     return biggestRectangle;
