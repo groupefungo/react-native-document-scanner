@@ -17,6 +17,7 @@
 
 @interface IPDFCameraViewController () <AVCaptureVideoDataOutputSampleBufferDelegate>
 
+@property (atomic, strong) dispatch_queue_t sessionQueue;
 @property (atomic, strong) AVCaptureSession *captureSession;
 @property (atomic, strong) AVCaptureDevice *captureDevice;
 @property (atomic, strong) EAGLContext *context;
@@ -116,7 +117,7 @@
     self.dataOutput = [[AVCaptureVideoDataOutput alloc] init];
     [self.dataOutput setAlwaysDiscardsLateVideoFrames:YES];
     [self.dataOutput setVideoSettings:@{(id)kCVPixelBufferPixelFormatTypeKey:@(kCVPixelFormatType_32BGRA)}];
-   // [self.dataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    [self.dataOutput setSampleBufferDelegate:self queue:self.sessionQueue];
     [self.captureSession addOutput:self.dataOutput];
 
     self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
@@ -152,7 +153,7 @@
 
     _cameraViewType = cameraViewType;
 
-    // dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+    // dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), self.sessionQueue, ^
    // {
    //     [viewWithBlurredBackground removeFromSuperview];
    // });
@@ -251,6 +252,22 @@
     }
 
     [weakSelf hideGLKView:YES completion:nil];
+
+    // Remove all outputs
+    /* for(AVCaptureVideoDataOutput *output1 in _captureSession.outputs) {
+         [output1 setSampleBufferDelegate:nil queue:NULL];
+         [_captureSession removeOutput:output1];
+     }
+
+     for(AVCaptureStillImageOutput *imageOutput in _captureSession.outputs) {
+         [imageOutput setSampleBufferDelegate:nil queue:nil];
+         [_captureSession removeOutput:imageOutput];
+     } */
+
+    weakSelf.captureSession=nil;
+    weakSelf.dataOutput=nil;
+    weakSelf.stillImageOutput=nil;
+    weakSelf.sessionQueue=nil;
 }
 
 - (void)setEnableTorch:(BOOL)enableTorch
