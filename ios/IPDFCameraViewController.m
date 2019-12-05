@@ -116,7 +116,7 @@
     self.dataOutput = [[AVCaptureVideoDataOutput alloc] init];
     [self.dataOutput setAlwaysDiscardsLateVideoFrames:YES];
     [self.dataOutput setVideoSettings:@{(id)kCVPixelBufferPixelFormatTypeKey:@(kCVPixelFormatType_32BGRA)}];
-    [self.dataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+   // [self.dataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
     [self.captureSession addOutput:self.dataOutput];
 
     self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
@@ -152,10 +152,10 @@
 
     _cameraViewType = cameraViewType;
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
-    {
-        [viewWithBlurredBackground removeFromSuperview];
-    });
+    // dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
+   // {
+   //     [viewWithBlurredBackground removeFromSuperview];
+   // });
 }
 
 -(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
@@ -278,6 +278,7 @@
 {
     _useFrontCam = useFrontCam;
     __weak typeof(self) weakSelf = self;
+    [weakSelf stop];
     [weakSelf setupCameraView];
     [weakSelf start];
 }
