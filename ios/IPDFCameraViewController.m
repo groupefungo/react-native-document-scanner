@@ -67,11 +67,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [context release];
-    [_glkView release];
-    [captureSession release];
-    [dataOutput release];
-    [super dealloc];
 }
 
 - (void)createGLKView
