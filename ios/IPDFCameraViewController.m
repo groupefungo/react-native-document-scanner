@@ -80,7 +80,7 @@
     _glkView.context = self.context;
     _glkView.contentScaleFactor = 1.0f;
     _glkView.drawableDepthFormat = GLKViewDrawableDepthFormat24;
-    [self insertSubview:view atIndex:0];
+    [self insertSubview:_glkView atIndex:0];
     // _glkView = view;
     glGenRenderbuffers(1, &_renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
