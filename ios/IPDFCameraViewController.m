@@ -253,16 +253,6 @@
 
     [weakSelf hideGLKView:YES completion:nil];
 
-    // Remove all outputs
-    /* for(AVCaptureVideoDataOutput *output1 in _captureSession.outputs) {
-         [output1 setSampleBufferDelegate:nil queue:NULL];
-         [_captureSession removeOutput:output1];
-     }
-
-     for(AVCaptureStillImageOutput *imageOutput in _captureSession.outputs) {
-         [imageOutput setSampleBufferDelegate:nil queue:nil];
-         [_captureSession removeOutput:imageOutput];
-     } */
 
     weakSelf.captureSession=nil;
     weakSelf.dataOutput=nil;
