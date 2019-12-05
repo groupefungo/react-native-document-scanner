@@ -17,15 +17,15 @@
 
 @interface IPDFCameraViewController () <AVCaptureVideoDataOutputSampleBufferDelegate>
 
-@property (nonatomic,strong) AVCaptureSession *captureSession;
-@property (nonatomic,strong) AVCaptureDevice *captureDevice;
-@property (nonatomic,strong) EAGLContext *context;
+@property (atomic, strong) AVCaptureSession *captureSession;
+@property (atomic, strong) AVCaptureDevice *captureDevice;
+@property (atomic, strong) EAGLContext *context;
 
-@property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
-@property (nonatomic, strong) AVCaptureVideoDataOutput *dataOutput;
+@property (atomic, strong) AVCaptureStillImageOutput *stillImageOutput;
+@property (atomic, strong) AVCaptureVideoDataOutput *dataOutput;
 
-@property (nonatomic, assign) BOOL forceStop;
-@property (nonatomic, assign) float lastDetectionRate;
+@property (atomic, assign) BOOL forceStop;
+@property (atomic, assign) float lastDetectionRate;
 
 @end
 
