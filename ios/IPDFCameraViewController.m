@@ -21,7 +21,8 @@
 @property (nonatomic,strong) AVCaptureDevice *captureDevice;
 @property (nonatomic,strong) EAGLContext *context;
 
-@property (nonatomic, strong) AVCaptureStillImageOutput* stillImageOutput;
+@property (nonatomic, strong) AVCaptureStillImageOutput *stillImageOutput;
+@property (nonatomic, strong) AVCaptureVideoDataOutput *dataOutput;
 
 @property (nonatomic, assign) BOOL forceStop;
 @property (nonatomic, assign) float lastDetectionRate;
@@ -66,6 +67,11 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [context release];
+    [_glkView release];
+    [captureSession release];
+    [dataOutput release];
+    [super dealloc];
 }
 
 - (void)createGLKView
@@ -84,6 +90,7 @@
     glGenRenderbuffers(1, &_renderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
     _coreImageContext = [CIContext contextWithEAGLContext:self.context];
+    [view release]
     [EAGLContext setCurrentContext:self.context];
 }
 
@@ -104,26 +111,27 @@
 
     _imageDedectionConfidence = 0.0;
 
-    AVCaptureSession *session = [[AVCaptureSession alloc] init];
-    self.captureSession = session;
-    [session beginConfiguration];
+    // AVCaptureSession *session = [[AVCaptureSession alloc] init];
+    self.captureSession = [[AVCaptureSession alloc] init];
+    // self.captureSession = session;
+    [self.captureSession beginConfiguration];
     self.captureDevice = device;
 
     NSError *error = nil;
     AVCaptureDeviceInput* input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
-    session.sessionPreset = AVCaptureSessionPresetPhoto;
-    [session addInput:input];
+    self.captureSession.sessionPreset = AVCaptureSessionPresetPhoto;
+    [self.captureSession addInput:input];
 
-    AVCaptureVideoDataOutput *dataOutput = [[AVCaptureVideoDataOutput alloc] init];
-    [dataOutput setAlwaysDiscardsLateVideoFrames:YES];
-    [dataOutput setVideoSettings:@{(id)kCVPixelBufferPixelFormatTypeKey:@(kCVPixelFormatType_32BGRA)}];
-    [dataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
-    [session addOutput:dataOutput];
+    self.dataOutput = [[AVCaptureVideoDataOutput alloc] init];
+    [self.dataOutput setAlwaysDiscardsLateVideoFrames:YES];
+    [self.dataOutput setVideoSettings:@{(id)kCVPixelBufferPixelFormatTypeKey:@(kCVPixelFormatType_32BGRA)}];
+    [self.dataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    [self.captureSession addOutput:self.dataOutput];
 
     self.stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
-    [session addOutput:self.stillImageOutput];
+    [self.captureSession addOutput:self.stillImageOutput];
 
-    AVCaptureConnection *connection = [dataOutput.connections firstObject];
+    AVCaptureConnection *connection = [self.dataOutput.connections firstObject];
     [connection setVideoOrientation:AVCaptureVideoOrientationPortrait];
 
     if (device.isFlashAvailable)
@@ -140,7 +148,7 @@
         }
     }
 
-    [session commitConfiguration];
+    [self.captureSession commitConfiguration];
 }
 
 - (void)setCameraViewType:(IPDFCameraViewType)cameraViewType
@@ -156,6 +164,8 @@
     {
         [viewWithBlurredBackground removeFromSuperview];
     });
+
+    [viewWithBlurredBackground release];
 }
 
 -(void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
